@@ -8,6 +8,13 @@ const User = require('../modals/userModal');
 // @route /api/users
 // @access Public
 
+// Gnerate Token
+const generateToken = (id) => {
+  return jwt.sign({id}, process.env.JWT_SECRET, {
+    expiresIn: '30d',
+  });
+};
+
 const registerUser = asyncHandler(async (req, res) => {
   const {name, email, password} = req.body;
 
@@ -84,13 +91,6 @@ const getMe = asyncHandler(async (req, res) => {
 
   res.status(200).json(user);
 });
-
-// Gnerate Token
-const generateToken = (id) => {
-  return jwt.sign({id}, process.env.JWT_SECRET, {
-    expiresIn: '30d',
-  });
-};
 
 module.exports = {
   registerUser,

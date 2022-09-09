@@ -10,6 +10,10 @@ connectDB();
 
 const app = express();
 
+var cors = require('cors');
+
+app.use(cors());
+
 // body-parser is a middleware that allows us to accept data in the body
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
@@ -23,6 +27,7 @@ app.get('/', (req, res) => {
 // Routes
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/users/login', require('./routes/userRoutes'));
+app.use('/api/users/me', require('./routes/userRoutes'));
 
 // Middlewares
 app.use(errorHandler);

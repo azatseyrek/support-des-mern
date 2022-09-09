@@ -1,6 +1,10 @@
 import React from 'react';
+import {useEffect} from 'react';
 import {FaUser} from 'react-icons/fa';
+import {useDispatch, useSelector} from 'react-redux';
+import {useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
+import {register, reset} from '../redux/auth/authSlice';
 
 const Register = () => {
   const [formData, setFormData] = React.useState({
@@ -10,7 +14,28 @@ const Register = () => {
     password2: '',
   });
 
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+
+  const userState = useSelector((state) => state.auth);
+
+  const {user, isError, isSuccess, isLoading, message} = userState;
+
   const {name, email, password, password2} = formData;
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    }
+    // Redirect if registered
+    if (isSuccess || user) {
+      toast.success(message);
+      navigate('/');
+    }
+
+    dispatch(reset());
+  }, [isError, isSuccess, user, message, dispatch, navigate]);
 
   const onChange = (e) => {
     // setFormData({...formData, [e.target.id]: e.target.value});
@@ -28,7 +53,13 @@ const Register = () => {
     if (password !== password2 && password !== '' && password2 !== '') {
       toast.error('Passwords do not match');
     }
-    console.log(formData);
+    // console.log(formData);
+    const userData = {
+      name,
+      email,
+      password,
+    };
+    dispatch(register(userData));
   };
 
   return (

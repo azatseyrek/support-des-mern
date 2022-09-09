@@ -1,16 +1,24 @@
-import React from 'react';
+import {useState} from 'react';
 import {FaSignInAlt} from 'react-icons/fa';
+import {useDispatch, useSelector} from 'react-redux';
 import {toast} from 'react-toastify';
+import {login} from '../redux/auth/authSlice';
 
 const Login = () => {
-  const [formData, setFormData] = React.useState({
+  const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     password2: '',
   });
 
-  const {name, email, password, password2} = formData;
+  const dispatch = useDispatch();
+
+  const userState = useSelector((state) => state.auth);
+
+  const {user, isError, isSuccess, isLoading, message} = userState;
+
+  const {email, password} = formData;
 
   const onChange = (e) => {
     // setFormData({...formData, [e.target.id]: e.target.value});
@@ -26,7 +34,12 @@ const Login = () => {
       toast.warning('Please fill in all fields');
     }
 
-    console.log(formData);
+    const userData = {
+      email,
+      password,
+    };
+
+    dispatch(login(userData));
   };
 
   return (

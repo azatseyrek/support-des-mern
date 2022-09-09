@@ -4,9 +4,11 @@ const User = require('../modals/userModal');
 
 const protect = asyncHandler(async (req, res, next) => {
   let token;
+
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
+    // or  req.headers.authorization.split(' ').includes('Bearer')
   ) {
     try {
       token = req.headers.authorization.split(' ')[1];
