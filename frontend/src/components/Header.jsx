@@ -2,16 +2,22 @@ import {FaSignInAlt, FaSignOutAlt, FaUser} from 'react-icons/fa';
 import {useDispatch, useSelector} from 'react-redux';
 import {Link, useNavigate} from 'react-router-dom';
 import {logout, reset} from '../redux/auth/authSlice';
+import {toast} from 'react-toastify';
 
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  //  get user from state
-  const user = useSelector((state) => state.auth.user);
+  //  get user from local storage
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  const message = 'Logut successful';
 
   const onLogout = () => {
     dispatch(logout());
     dispatch(reset());
+    toast.success(message, {
+      hideProgressBar: true,
+    });
     navigate('/');
   };
 

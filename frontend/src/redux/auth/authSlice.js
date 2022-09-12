@@ -29,7 +29,14 @@ export const register = createAsyncThunk(
 );
 // Login with existing user
 export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
-  console.log(user);
+  try {
+    return await authService.login(user);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data.message) || "Can't login";
+
+    return thunkAPI.rejectWithValue(message);
+  }
 });
 
 //  Logout user
@@ -51,6 +58,7 @@ export const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    // register
     builder.addCase(register.pending, (state) => {
       state.isLoading = true;
       state.isSuccess = false;
@@ -61,6 +69,7 @@ export const authSlice = createSlice({
       state.isSuccess = true;
       state.isError = false;
       state.user = action.payload;
+      state.message = 'Registration successful';
     });
     builder.addCase(register.rejected, (state, action) => {
       state.isLoading = false;
@@ -69,6 +78,27 @@ export const authSlice = createSlice({
       state.message = action.payload;
       state.user = null;
     });
+    // login
+    builder.addCase(login.pending, (state) => {
+      state.isLoading = true;
+      state.isSuccess = false;
+      state.isError = false;
+    });
+    builder.addCase(login.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isError = false;
+      state.user = action.payload;
+      state.message = 'Login successful';
+    });
+    builder.addCase(login.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = false;
+      state.isError = true;
+      state.message = action.payload;
+      state.user = null;
+    });
+    // logout
     builder.addCase(logout.fulfilled, (state) => {
       state.user = null;
     });
